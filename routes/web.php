@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OfferController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
@@ -29,4 +30,11 @@ Route::middleware("auth")->group(function () {
     Route::get("/dashboard", function () {
         return view("pages.dashboard");
     })->name("dashboard");
+
+    Route::controller(OfferController::class)->prefix("offers")->group(function () {
+        Route::get("/", "list")->name("offers.list");
+        Route::get("/show/{offer_id}", "show")->name("offers.show");
+        Route::get("/edit/{offer_id?}", "edit")->name("offers.edit");
+        Route::post("/process/", "update")->name("offers.process");
+    });
 });
