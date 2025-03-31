@@ -98,7 +98,7 @@ const prepareSaveOffer = () => {
 
     <x-app.section title="Konfiguracja" class="sticky">
         <x-slot:buttons>
-            <button type="submit">Przelicz wycenę</button>
+            <button type="submit">Przelicz ofertę</button>
             <span class="button" onclick="prepareSaveOffer()">Zapisz i zakończ</button>
         </x-slot:buttons>
 
