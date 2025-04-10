@@ -20,6 +20,7 @@ class Offer extends Model
 
     protected $casts = [
         "positions" => "array",
+        "unit_cost_visible" => "boolean",
     ];
 
     #region relations

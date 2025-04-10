@@ -8,7 +8,6 @@
         <title>@yield("title") | {{ config("app.name") }} | Promodruk</title>
 
         <link rel="stylesheet" href="{{ asset("css/app.css") }}">
-        @include("popper::assets")
         {{-- <link rel="stylesheet" href="{{ asset("css/ckeditor.css") }}?{{ time() }}"> --}}
         {{-- <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.0.0/ckeditor5.css"> --}}
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -43,6 +42,7 @@
         {{-- <script type="module" src="{{ asset("js/ckeditor.js") }}?{{ time() }}"></script> --}}
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        @include("popper::assets")
     </head>
     <body>
         <div id="main-wrapper" class="flex-down">

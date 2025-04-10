@@ -62,6 +62,10 @@ h1, h2, h3, h4, .accent, a, .clickable {
     &.stretch {
         justify-content: space-between;
     }
+
+    &.no-gap {
+        gap: 0;
+    }
 }
 .grid {
     display: grid;

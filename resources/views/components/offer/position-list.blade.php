@@ -1,8 +1,8 @@
 @props([
     "products",
     "user",
+    "edited" => [],
     "showPricesPerUnit" => false,
-    "showMarkings" => false,
 ])
 
 @foreach ($products as $product)
@@ -12,15 +12,43 @@
     class="product flex-down"
 >
     <x-slot:buttons>
-        <x-input-field type="checkbox"
-            name="show_ofertownik_link[{{ $product['id'] }}]"
-            label="Dodaj link"
-            value="1"
-            :checked="$product['show_ofertownik_link'] ?? false"
-            onchange="submitWithLoader()"
-        />
-        @if ($product["quantities"]) <span class="button" onclick="showQuantities(this.closest('section'))">Ilości</span> @endif
-        <span class="button" onclick="deleteProductFromOffer(this.closest('section'))">Usuń</span>
+        <div class="flex-right middle barred-right">
+            @if ($product["quantities"])
+            <div class="flex-down center no-gap">
+                <small>Ilości: <strong>{{ count($product['quantities']) }}</strong></small>
+                @if ($product["calculations"])
+                <small>Kalkulacje: <strong>{{ count($product['calculations']) }}</strong></small>
+                @endif
+            </div>
+
+            <div class="flex-right">
+                <span class="button" onclick="showQuantities(this.closest('section'))">Ilości</span>
+
+                <x-input-field type="number"
+                    name="surcharge[{{ $product['id'] }}][product]" label="Nadwyżka (%)"
+                    min="0" step="0.1"
+                    :value="$product['surcharge']"
+                />
+
+                <x-input-field type="checkbox"
+                    name="show_ofertownik_link[{{ $product['id'] }}]"
+                    label="Dodaj link"
+                    value="1"
+                    :checked="$product['show_ofertownik_link'] ?? false"
+                    onchange="submitWithLoader()"
+                />
+            </div>
+            @endif
+
+            <div class="flex-right">
+                @if ($product["quantities"])
+                <input type="checkbox" name="edited[]" class="hidden" value="{{ $product['id'] }}" {{ in_array($product["id"], $edited) ? "checked" : "" }}>
+                <span class="button" onclick="makeEditable(this.closest('section'))">Edytuj</span>
+                @endif
+
+                <span class="button danger" onclick="deleteProductFromOffer(this.closest('section'))">Usuń</span>
+            </div>
+        </div>
     </x-slot:buttons>
 
     <input type="hidden" name="product_ids[]" value="{{ $product['id'] }}">
@@ -40,6 +68,10 @@
     </div>
 
     @if ($product["quantities"])
+    <div role="prices" class="{{ implode(" ", array_filter([
+        "flex-down",
+        in_array($product["id"], $edited) ?: "hidden",
+    ]))}}">
         <div class="flex-right stretch">
             <div class="flex-right">
                 <div class="flex-right">
@@ -73,12 +105,6 @@
                     </ul>
                 </div>
                 @endif
-
-                <x-input-field type="number"
-                    name="surcharge[{{ $product['id'] }}][product]" label="Nadwyżka (%)"
-                    min="0" step="0.1"
-                    :value="$product['surcharge']"
-                />
             </div>
 
             <div class="calculations" data-product-id="{{ $product['id'] }}" data-count="{{ count($product["calculations"]) }}">
@@ -119,9 +145,7 @@
             </div>
         </div>
 
-        <div role="markings" class="{{ implode(" ", array_filter([
-            $showMarkings ?: "hidden",
-        ])) }}">
+        <div role="markings">
             @foreach ($product["markings"] as $position_name => $techniques)
             <h3 style="grid-column: span 2">{{ $position_name }}</h3>
 

@@ -26,10 +26,10 @@ const showQuantities = (section) => {
     section.querySelector(".quantities").parentElement.classList.toggle("hidden")
 }
 
-const showMarkings = () => {
-    document.querySelectorAll("[role='markings']").forEach((section) => {
-        section.classList.toggle("hidden")
-    })
+const makeEditable = (section) => {
+    const edited_input = section.querySelector("input[name='edited[]']")
+    edited_input.checked = !edited_input.checked
+    section.querySelector("[role='prices']").classList.toggle("hidden")
 }
 
 const deleteProductFromOffer = (section) => {
@@ -128,12 +128,6 @@ const prepareSaveOffer = () => {
                         value="1"
                         :checked="$offer?->unit_cost_visible"
                         onchange="submitWithLoader()"
-                    />
-                    <x-input-field type="checkbox"
-                        name="show_markings" label="Znakowania"
-                        value="1"
-                        :checked="false"
-                        onchange="showMarkings()"
                     />
                 </div>
             </div>

@@ -47,10 +47,10 @@ class OfferController extends Controller
     {
         $products = $this->prepareProducts($rq);
         $user = Auth::user() ?? User::find($rq->user_id);
+        $edited = $rq->get("edited");
         $showPricesPerUnit = $rq->has("show_prices_per_unit");
-        $showMarkings = $rq->has("show_markings");
 
-        return view("components.offer.position-list", compact("products", "user", "showPricesPerUnit", "showMarkings"));
+        return view("components.offer.position-list", compact("products", "user", "edited", "showPricesPerUnit"));
     }
 
     public function save(Request $rq)
@@ -152,6 +152,7 @@ class OfferController extends Controller
             ->map(fn ($p) => [
                 ...$p,
                 "calculations" => collect($rq->calculations[$p["id"]] ?? [])
+                    ->values()
                     ->map(fn ($calc) => [
                         "items" => collect($calc)
                             ->map(fn ($calc_item) => [
