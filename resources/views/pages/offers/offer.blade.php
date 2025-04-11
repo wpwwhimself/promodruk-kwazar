@@ -14,7 +14,7 @@ const toggleDiscounts = (btn) => {
 //?// quantities //?//
 
 let _appendQuantity = (input, quantity) => {
-    input.closest("section").find(".quantities").append(`<div {{ Popper::pop("Usuń ilość") }} onclick="this.remove()">
+    input.closest("section").find(".quantities").append(`<div {{ Popper::pop("Usuń ilość") }} onclick="section = this.closest('section'); this.remove(); revealAddButton(section);">
         <input type="hidden" name="quantities[${input.attr("data-product")}][]" value="${quantity}">
         <span class="button">${quantity}</span>
     </div>`)
@@ -26,9 +26,16 @@ const showQuantities = (section) => {
     section.querySelector(".quantities").parentElement.classList.toggle("hidden")
 }
 
+const revealAddButton = (section) => {
+    const quantities = section.querySelector(".quantities").children
+    const addBtn = section.querySelector(".button[role='add-button']").classList.toggle("hidden", !quantities.length)
+}
+
 const makeEditable = (section) => {
+    const edited_btn = section.querySelector(".button[role='edit-button']")
     const edited_input = section.querySelector("input[name='edited[]']")
     edited_input.checked = !edited_input.checked
+    edited_btn.textContent = edited_input.checked ? "Zamknij" : "Edytuj"
     section.querySelector("[role='prices']").classList.toggle("hidden")
 }
 
@@ -53,8 +60,11 @@ const openCalculationsPopup = (product_id, availableCalculations, marking) => {
 const addCalculation = (product_id, calculation, marking) => {
     const container = document.querySelector(`.calculations[data-product-id="${product_id}"]`)
     calculation = (calculation == "new") ? container.dataset.count : calculation
-    document.querySelector(`.calculations[data-product-id="${product_id}"]`)
-        .append(fromHTML(`<input type="hidden" name="calculations[${product_id}][${calculation}][][code]" value="${marking}" />`))
+    container.append(fromHTML(`<input type="hidden" name="calculations[${product_id}][${calculation}][][code]" value="${marking}" />`))
+    container.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+    })
     toggleDialog()
     submitWithLoader()
 }

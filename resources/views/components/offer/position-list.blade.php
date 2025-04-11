@@ -14,11 +14,15 @@
     <x-slot:buttons>
         <div class="flex-right middle barred-right">
             @if ($product["quantities"])
-            <div class="flex-down center no-gap">
-                <small>Ilości: <strong>{{ count($product['quantities']) }}</strong></small>
-                @if ($product["calculations"])
-                <small>Kalkulacje: <strong>{{ count($product['calculations']) }}</strong></small>
-                @endif
+
+            @if ($product["calculations"])
+            <div>
+                <strong class="accent">Kalkulacje: {{ count($product['calculations']) }}</strong>
+            </div>
+            @endif
+
+            <div>
+                <span>Ilości: <strong>{{ implode("/", $product["quantities"]) }}</strong></span>
             </div>
 
             <div class="flex-right">
@@ -43,7 +47,9 @@
             <div class="flex-right">
                 @if ($product["quantities"])
                 <input type="checkbox" name="edited[]" class="hidden" value="{{ $product['id'] }}" {{ in_array($product["id"], $edited) ? "checked" : "" }}>
-                <span class="button" onclick="makeEditable(this.closest('section'))">Edytuj</span>
+                <span class="button" role="edit-button" onclick="makeEditable(this.closest('section'))">{{ in_array($product["id"], $edited) ? "Zamknij": "Edytuj" }}</span>
+                @else
+                <span class="button hidden" role="add-button" onclick="submitWithLoader()">Dodaj</span>
                 @endif
 
                 <span class="button danger" onclick="deleteProductFromOffer(this.closest('section'))">Usuń</span>
@@ -240,6 +246,7 @@ $("input[name^=quantities_maker]").on("change keypress", function(e) {
     if (e.type === "keypress" && e.which !== 13) return;
     e.preventDefault()
     _appendQuantity($(this), $(this).val())
+    revealAddButton(this.closest('section'))
     $(this).val(null)
 })
 // init quantities
