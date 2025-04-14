@@ -44,12 +44,12 @@ const deleteProductFromOffer = (section) => {
 }
 
 //?// calculations //?//
-const openCalculationsPopup = (product_id, availableCalculations, marking) => {
+const openCalculationsPopup = (product_id, availableCalculations, code, field = 'items') => {
     toggleDialog(
         "Wybierz kalkulację",
         [...availableCalculations, "new"]
             .map((calc) => `<span class="button"
-                onclick="addCalculation('${product_id}', '${calc}', '${marking}')"
+                onclick="addCalculation('${product_id}', '${calc}', '${code}', '${field}')"
             >
                 ${calc == "new" ? "Nowa kalkulacja" : `Kalkulacja nr ${calc + 1}`}
             </span>`)
@@ -57,10 +57,10 @@ const openCalculationsPopup = (product_id, availableCalculations, marking) => {
     )
 }
 
-const addCalculation = (product_id, calculation, marking) => {
+const addCalculation = (product_id, calculation, code, field = 'items') => {
     const container = document.querySelector(`.calculations[data-product-id="${product_id}"]`)
     calculation = (calculation == "new") ? container.dataset.count : calculation
-    container.append(fromHTML(`<input type="hidden" name="calculations[${product_id}][${calculation}][][code]" value="${marking}" />`))
+    container.append(fromHTML(`<input type="hidden" name="calculations[${product_id}][${calculation}][${field}][][code]" value="${code}" />`))
     container.scrollIntoView({
         behavior: "smooth",
         block: "center",
@@ -69,7 +69,7 @@ const addCalculation = (product_id, calculation, marking) => {
     submitWithLoader()
 }
 
-const deleteCalculation = (product_id, calc_id, code) => {
+const deleteCalculation = (product_id, calc_id, code, field = 'items') => {
     document.querySelector(`input[name^="calculations[${product_id}][${calc_id}]"][value="${code}"]`).remove()
     submitWithLoader()
 }

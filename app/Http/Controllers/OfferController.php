@@ -152,15 +152,17 @@ class OfferController extends Controller
             ->map(fn ($p) => [
                 ...$p,
                 "calculations" => collect($rq->calculations[$p["id"]] ?? [])
-                    ->values()
                     ->map(fn ($calc) => [
-                        "items" => collect($calc)
+                        "items" => collect($calc["items"] ?? [])
                             ->map(fn ($calc_item) => [
                                 ...$calc_item,
                                 "marking" => collect($p["markings"])
                                     ->flatten(1)
                                     ->firstWhere("id", Str::beforeLast($calc_item["code"], "_")),
                             ])
+                            ->toArray(),
+                        "additional_services" => collect($calc["additional_services"] ?? [])
+                            ->map(fn ($item) => $p["additional_services"][$item["code"]])
                             ->toArray(),
                     ])
                     ->map(fn ($calc) => [
@@ -169,6 +171,7 @@ class OfferController extends Controller
                             ->mapWithKeys(function ($qty) use ($p, $calc) {
                                 $product_price = $p["price"] + $p["manipulation_cost"];
                                 $markings_price = 0;
+                                $additionals_price = 0;
 
                                 foreach ($calc["items"] as ["code" => $code, "marking" => $marking]) {
                                     $price_data = $marking["quantity_prices"][$qty];
@@ -188,7 +191,12 @@ class OfferController extends Controller
 
                                     $markings_price += $mod_setup + $added_marking_price;
                                 }
-                                return [$qty => $markings_price + $product_price * $qty];
+
+                                foreach ($calc["additional_services"] as ["label" => $label, "price_per_unit" => $price_per_unit]) {
+                                    $additionals_price += $price_per_unit * $qty;
+                                }
+
+                                return [$qty => $markings_price + $additionals_price + $product_price * $qty];
                             })
                             ->toArray(),
                     ])

@@ -210,6 +210,14 @@ class DocumentOutputController extends Controller
                         $list->addText(" (" . as_pln($sum / $qty) . "/szt.)", $this->style(["ghost", "small"]));
                     }
                 }
+
+                if ($calculation["additional_services"]) {
+                    $section->addText("W cenie zawarte są dodatkowe usługi:", null, $this->style(["p_tight", "h_separated"]));
+                    foreach ($calculation["additional_services"] as $service) {
+                        $list = $section->addListItemRun(0, null, $this->style(["p_tight"]));
+                        $list->addText($service["label"]);
+                    }
+                }
             }
 
             $section->addText(" ", null, $this->style(["h_separated"]));
