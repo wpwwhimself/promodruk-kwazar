@@ -70,7 +70,7 @@ const addCalculation = (product_id, calculation, code, field = 'items') => {
 }
 
 const deleteCalculation = (product_id, calc_id, code, field = 'items') => {
-    document.querySelector(`input[name^="calculations[${product_id}][${calc_id}]"][value="${code}"]`).remove()
+    document.querySelector(`input[name^="calculations[${product_id}][${calc_id}][${field}]"][value="${code}"]`).remove()
     submitWithLoader()
 }
 

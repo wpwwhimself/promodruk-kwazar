@@ -177,6 +177,7 @@ class OfferController extends Controller
                         "additional_services" => collect($calc["additional_services"] ?? [])
                             ->map(fn ($item) => $p["additional_services"][$item["code"]])
                             ->toArray(),
+                        "pin_product" => $calc["pin_product"] ?? false,
                     ])
                     ->map(fn ($calc) => [
                         ...$calc,

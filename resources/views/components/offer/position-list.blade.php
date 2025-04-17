@@ -111,6 +111,18 @@
                     </ul>
                 </div>
                 @endif
+
+                <span class="button" style="align-self: start;"
+                    @popper(Dodaj do kalkulacji)
+                    onclick="openCalculationsPopup(
+                        '{{ $product['id'] }}',
+                        {!! json_encode(array_keys($product['calculations'] ?? [])) !!},
+                        '!',
+                        'pin_product'
+                    )"
+                >
+                    +
+                </span>
             </div>
 
             <div class="calculations" data-product-id="{{ $product['id'] }}" data-count="{{ count($product["calculations"]) }}">
@@ -118,6 +130,22 @@
                 <h3>Kalkulacja nr {{ $i + 1 }}</h3>
                 <div class="grid" style="--col-count: 2;">
                     <div class="flex-down">
+                        @if (
+                            $calculation["pin_product"] ?? false
+                            && !$calculation["items"]
+                            && !$calculation["additional_services"]
+                        )
+                        <span>
+                            <input type="hidden"
+                                name="calculations[{{ $product['id'] }}][{{ $i }}][pin_product]"
+                                value="!"
+                            />
+                            <span class="ghost">Sam produkt (przypięty)</span>
+
+                            <span class="button" onclick="deleteCalculation('{{ $product['id'] }}', {{ $i }}, '!', 'pin_product')">×</span>
+                        </span>
+                        @endif
+
                         @if ($calculation["items"])
                         <h4>Znakowania</h4>
                         @foreach ($calculation["items"] as $item_i => ["code" => $code, "marking" => $marking])
@@ -296,7 +324,7 @@
                         <x-input-field type="number"
                             name="surcharge[{{ $product['id'] }}][additional_services][{{ $service_index }}]" label="Nadwyżka (%)"
                             min="0" step="0.1"
-                            :value="$service['surcharge']"
+                            :value="$service['surcharge'] ?? null"
                         />
                     </div>
                 </div>

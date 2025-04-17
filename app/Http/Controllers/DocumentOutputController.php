@@ -163,41 +163,43 @@ class DocumentOutputController extends Controller
                     $this->style(["h_separated"])
                 );
 
-                $section->addText("Znakowanie:", $this->style(["bold"]), $this->style(["h_separated"]));
-                $table = $section->addTable($this->style(["table"]));
-                foreach ($calculation["items"] as $item_i => ["code" => $code, "marking" => $marking]) {
-                    if ($item_i % 3 == 0)
-                        $table->addRow();
+                if ($calculation["items"] ?? []) {
+                    $section->addText("Znakowanie:", $this->style(["bold"]), $this->style(["h_separated"]));
+                    $table = $section->addTable($this->style(["table"]));
+                    foreach ($calculation["items"] as $item_i => ["code" => $code, "marking" => $marking]) {
+                        if ($item_i % 3 == 0)
+                            $table->addRow();
 
-                    $cell = $table->addCell(null, $this->style(["table_cell"]));
-                    if ($marking["position"]) {
-                        $cell->addText("$marking[position]:", $this->style(["underline"]), $this->style(["p_tight"]));
-                    }
-                    $technique_line = $cell->addTextRun($this->style(["p_tight"]));
-                    $technique_name = $technique_line->addText($this->simplifyTechniqueName($marking["technique"]));
-                    // if (Str::contains($marking["technique"], self::TECHNIQUES_TO_SIMPLIFY, true)) {
-                    //     // if name was simplified, keep original name in the comment
-                    //     $comment = new Comment(env("APP_COMPANY_NAME"));
-                    //     $comment->addText($marking["technique"]);
-                    //     $document->addComment($comment);
-                    //     $technique_name->setCommentRangeStart($comment);
-                    // }
-                    if (Str::contains($code, "_")) { // modifier active, retrieving name
-                        $technique_line->addText(" – " . Str::afterLast($code, "_"));
-                    }
-                    if ($marking["print_size"]) {
-                        $cell->addText("Maks. obszar znak.: " . $marking["print_size"], $this->style(["ghost", "small"]));
-                    }
-                    if ($marking["images"] && $marking["images"][0]) {
-                        try {
-                            $img = Http::get($marking["images"][0])->body();
-                            $dimensions = getimagesizefromstring($img);
-                            $cell->addImage($img, $this->style([
-                                ($dimensions[0] < $dimensions[1]) ? "img_by_height" : "img",
-                                "h_separated",
-                            ]));
-                        } catch (\Exception $e) {
-                            // skip
+                        $cell = $table->addCell(null, $this->style(["table_cell"]));
+                        if ($marking["position"]) {
+                            $cell->addText("$marking[position]:", $this->style(["underline"]), $this->style(["p_tight"]));
+                        }
+                        $technique_line = $cell->addTextRun($this->style(["p_tight"]));
+                        $technique_name = $technique_line->addText($this->simplifyTechniqueName($marking["technique"]));
+                        // if (Str::contains($marking["technique"], self::TECHNIQUES_TO_SIMPLIFY, true)) {
+                        //     // if name was simplified, keep original name in the comment
+                        //     $comment = new Comment(env("APP_COMPANY_NAME"));
+                        //     $comment->addText($marking["technique"]);
+                        //     $document->addComment($comment);
+                        //     $technique_name->setCommentRangeStart($comment);
+                        // }
+                        if (Str::contains($code, "_")) { // modifier active, retrieving name
+                            $technique_line->addText(" – " . Str::afterLast($code, "_"));
+                        }
+                        if ($marking["print_size"]) {
+                            $cell->addText("Maks. obszar znak.: " . $marking["print_size"], $this->style(["ghost", "small"]));
+                        }
+                        if ($marking["images"] && $marking["images"][0]) {
+                            try {
+                                $img = Http::get($marking["images"][0])->body();
+                                $dimensions = getimagesizefromstring($img);
+                                $cell->addImage($img, $this->style([
+                                    ($dimensions[0] < $dimensions[1]) ? "img_by_height" : "img",
+                                    "h_separated",
+                                ]));
+                            } catch (\Exception $e) {
+                                // skip
+                            }
                         }
                     }
                 }
