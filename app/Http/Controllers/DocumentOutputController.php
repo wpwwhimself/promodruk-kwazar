@@ -32,6 +32,7 @@ class DocumentOutputController extends Controller
         "tampon",
         "sitodruk",
     ];
+    public const VAT_COEF = 1.23;
 
     public function processOffer(string $format, int $offer_id)
     {
@@ -204,12 +205,12 @@ class DocumentOutputController extends Controller
                     }
                 }
 
-                $section->addText("Cena (netto):", $this->style(["bold"]), $this->style(["p_tight", "h_separated"]));
+                $section->addText("Cena netto".($offer->gross_prices_visible ? " (brutto)" : "").":", $this->style(["bold"]), $this->style(["p_tight", "h_separated"]));
                 foreach ($calculation["summary"] as $qty => $sum) {
                     $list = $section->addListItemRun(0, null, $this->style(["p_tight"]));
-                    $list->addText("$qty szt.: " . as_pln($sum));
+                    $list->addText("$qty szt.: " . as_pln($sum) . ($offer->gross_prices_visible ? " (" . as_pln($sum * self::VAT_COEF) . ")" : ""));
                     if ($offer->unit_cost_visible) {
-                        $list->addText(" (" . as_pln($sum / $qty) . "/szt.)", $this->style(["ghost", "small"]));
+                        $list->addText(" (" . as_pln($sum / $qty) . ($offer->gross_prices_visible ? "/".as_pln($sum / $qty * self::VAT_COEF) : "") . "/szt.)", $this->style(["ghost", "small"]));
                     }
                 }
 

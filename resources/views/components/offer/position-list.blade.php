@@ -3,7 +3,12 @@
     "user",
     "edited" => [],
     "showPricesPerUnit" => false,
+    "showGrossPrices" => false,
 ])
+
+@php
+$vat_coef = 1.23;
+@endphp
 
 @foreach ($products as $product)
 <x-app.section
@@ -75,14 +80,20 @@
         <div class="flex-right stretch">
             <div class="flex-right">
                 <div class="flex-right">
-                    <span>Wartość produktu netto:</span>
+                    <span>Wartość produktu netto{{ $showGrossPrices ? " (brutto)" : "" }}:</span>
                     <ul>
                         @foreach ($product["quantities"] as $qty)
                         <li>
                             {{ $qty }} szt:
-                            <strong>{{ as_pln($product["price"] * $qty) }}</strong>
+                            @php $prc = $product["price"] * $qty; @endphp
+                            <strong>{{ as_pln($prc) }}</strong>
+                            @if ($showGrossPrices)
+                            <strong class="accent">({{ as_pln($prc * $vat_coef) }})</strong>
+                            @endif
+
                             @if ($showPricesPerUnit)
-                            <small class="ghost">{{ as_pln($product["price"]) }}/szt.</small>
+                            @php $prc = $product["price"]; @endphp
+                            <small class="ghost">{{ as_pln($prc) }}{{ $showGrossPrices ? "/".as_pln($prc * $vat_coef) : "" }}/szt.</small>
                             @endif
                         </li>
                         @endforeach
@@ -96,9 +107,15 @@
                         @foreach ($product["quantities"] as $qty)
                         <li>
                             {{ $qty }} szt:
-                            <strong>{{ as_pln(($product["price"] + $product["manipulation_cost"]) * $qty) }}</strong>
+                            @php $prc = $product["price"] + $product["manipulation_cost"] * $qty; @endphp
+                            <strong>{{ as_pln($prc) }}</strong>
+                            @if ($showGrossPrices)
+                            <strong class="accent">({{ as_pln($prc * $vat_coef) }})</strong>
+                            @endif
+
                             @if ($showPricesPerUnit)
-                            <small class="ghost">{{ as_pln($product["price"] + $product["manipulation_cost"]) }}/szt.</small>
+                            @php $prc = $product["price"] + $product["manipulation_cost"]; @endphp
+                            <small class="ghost">{{ as_pln($prc) }}{{ $showGrossPrices ? "/".as_pln($prc * $vat_coef) : "" }}/szt.</small>
                             @endif
                         </li>
                         @endforeach
@@ -184,9 +201,15 @@
                         @foreach ($calculation["summary"] as $qty => $sum)
                         <li>
                             {{ $qty }} szt.:
-                            <strong>{{ as_pln($sum) }}</strong>
+                            @php $prc = $sum; @endphp
+                            <strong>{{ as_pln($prc) }}</strong>
+                            @if ($showGrossPrices)
+                            <strong class="accent">({{ as_pln($prc * $vat_coef) }})</strong>
+                            @endif
+
                             @if ($showPricesPerUnit)
-                            <small class="ghost">{{ as_pln($sum / $qty) }}/szt.</small>
+                            @php $prc = $sum / $qty; @endphp
+                            <small class="ghost">{{ as_pln($prc) }}{{ $showGrossPrices ? "/".as_pln($prc * $vat_coef) : "" }}/szt.</small>
                             @endif
                         </li>
                         @endforeach
@@ -230,15 +253,21 @@
                                     @endphp
                                     <li>
                                         {{ $requested_quantity }} szt:
-                                        <strong>{{ as_pln(
-                                            ($price_data["flat"] ?? false)
-                                                ? ($mod_setup + $mod_price_per_unit + $product_price * $requested_quantity)
-                                                : ($mod_setup + ($mod_price_per_unit + $product_price) * $requested_quantity)
-                                        ) }}</strong>
+                                        @php
+                                        $prc = ($price_data["flat"] ?? false)
+                                            ? ($mod_setup + $mod_price_per_unit + $product_price * $requested_quantity)
+                                            : ($mod_setup + ($mod_price_per_unit + $product_price) * $requested_quantity);
+                                        @endphp
+                                        <strong>{{ as_pln($prc) }}</strong>
+                                        @if ($showGrossPrices)
+                                        <strong class="accent">({{ as_pln($prc * $vat_coef) }})</strong>
+                                        @endif
+
                                         @if ($showPricesPerUnit)
+                                        @php $prc = $mod_price_per_unit + $product_price; @endphp
                                         <small class="ghost">
-                                            {{ as_pln($mod_price_per_unit + $product_price) }}/szt.
-                                            @if ($t["setup_price"]) + przygotowanie {{ as_pln($mod_setup) }} @endif
+                                            {{ as_pln($prc) }}{{ $showGrossPrices ? "/".as_pln($prc * $vat_coef) : "" }}/szt.
+                                            @if ($t["setup_price"]) + przygotowanie {{ as_pln($mod_setup) }}{{ $showGrossPrices ? "/".as_pln($mod_setup * $vat_coef) : "" }} @endif
                                         </small>
                                         @endif
                                     </li>
@@ -299,9 +328,15 @@
                                     @foreach ($product["quantities"] as $qty)
                                     <li>
                                         {{ $qty }} szt:
-                                        <strong>{{ as_pln($service["price_per_unit"] * $qty) }}</strong>
+                                        @php $prc = $service["price_per_unit"] * $qty; @endphp
+                                        <strong>{{ as_pln($prc) }}</strong>
+                                        @if ($showGrossPrices)
+                                        <strong class="accent">({{ as_pln($prc * $vat_coef) }})</strong>
+                                        @endif
+
                                         @if ($showPricesPerUnit)
-                                        <small class="ghost">{{ as_pln($service["price_per_unit"]) }}/szt.</small>
+                                        @php $prc = $service["price_per_unit"]; @endphp
+                                        <small class="ghost">{{ as_pln($prc) }}{{ $showGrossPrices ? "/".as_pln($prc * $vat_coef) : "" }}/szt.</small>
                                         @endif
                                     </li>
                                     @endforeach

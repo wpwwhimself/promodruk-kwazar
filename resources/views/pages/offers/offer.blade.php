@@ -139,6 +139,12 @@ const prepareSaveOffer = () => {
                         :checked="$offer?->unit_cost_visible"
                         onchange="submitWithLoader()"
                     />
+                    <x-input-field type="checkbox"
+                        name="show_gross_prices" label="Ceny brutto"
+                        value="1"
+                        :checked="$offer?->gross_prices_visible"
+                        onchange="submitWithLoader()"
+                    />
                 </div>
             </div>
         </div>

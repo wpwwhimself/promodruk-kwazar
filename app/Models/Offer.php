@@ -14,13 +14,14 @@ class Offer extends Model
 
     protected $fillable = [
         "name", "notes",
-        "unit_cost_visible",
+        "unit_cost_visible", "gross_prices_visible",
         "positions",
     ];
 
     protected $casts = [
         "positions" => "array",
         "unit_cost_visible" => "boolean",
+        "gross_prices_visible" => "boolean",
     ];
 
     #region relations

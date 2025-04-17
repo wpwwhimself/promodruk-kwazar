@@ -49,8 +49,9 @@ class OfferController extends Controller
         $user = Auth::user() ?? User::find($rq->user_id);
         $edited = $rq->get("edited");
         $showPricesPerUnit = $rq->has("show_prices_per_unit");
+        $showGrossPrices = $rq->has("show_gross_prices");
 
-        return view("components.offer.position-list", compact("products", "user", "edited", "showPricesPerUnit"));
+        return view("components.offer.position-list", compact("products", "user", "edited", "showPricesPerUnit", "showGrossPrices"));
     }
 
     public function save(Request $rq)
@@ -62,6 +63,7 @@ class OfferController extends Controller
                 "name" => $rq->offer_name ?? now()->format("Y-m-d H:i"),
                 "notes" => $rq->offer_notes,
                 "unit_cost_visible" => $rq->has("show_prices_per_unit"),
+                "gross_prices_visible" => $rq->has("show_gross_prices"),
                 "positions" => $products,
             ]
         );
