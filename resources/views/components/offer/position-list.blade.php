@@ -28,12 +28,6 @@
             <div class="flex-right">
                 <span class="button" onclick="showQuantities(this.closest('section'))">Ilości</span>
 
-                <x-input-field type="number"
-                    name="surcharge[{{ $product['id'] }}][product]" label="Nadwyżka (%)"
-                    min="0" step="0.1"
-                    :value="$product['surcharge']"
-                />
-
                 <x-input-field type="checkbox"
                     name="show_ofertownik_link[{{ $product['id'] }}]"
                     label="Dodaj link"
@@ -123,6 +117,12 @@
                 >
                     +
                 </span>
+
+                <x-input-field type="number"
+                    name="surcharge[{{ $product['id'] }}][product]" label="Nadwyżka (%)"
+                    min="0" step="0.1"
+                    :value="$product['surcharge']"
+                />
             </div>
 
             <div class="calculations" data-product-id="{{ $product['id'] }}" data-count="{{ count($product["calculations"]) }}">
