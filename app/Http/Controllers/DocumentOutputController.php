@@ -164,7 +164,7 @@ class DocumentOutputController extends Controller
                     $this->style(["h_separated"])
                 );
 
-                if ($calculation["items"] ?? []) {
+                if (array_reduce($calculation["items"], fn ($has_markings, $item) => $has_markings = $has_markings || !empty($item["marking"]), false)) {
                     $section->addText("Znakowanie:", $this->style(["bold"]), $this->style(["h_separated"]));
                     $table = $section->addTable($this->style(["table"]));
                     foreach ($calculation["items"] as $item_i => ["code" => $code, "marking" => $marking]) {

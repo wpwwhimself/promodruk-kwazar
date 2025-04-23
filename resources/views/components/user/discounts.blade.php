@@ -4,6 +4,7 @@
             <th>Dostawca</th>
             <th>Rabat prod. (%)</th>
             <th>Rabat znak. (%)</th>
+            <th>Rabat usł. dod. (%)</th>
         </tr>
     </thead>
     <tbody>

@@ -146,6 +146,11 @@ class OfferController extends Controller
                         ...$as,
                         "price_per_unit" => round(
                             $as["price_per_unit"]
+                            * (in_array("additional_services_discount", $suppliers->firstWhere("name", $p["product_family"]["source"])->allowed_discounts ?? [])
+                                && ($p["enable_discount"] ?? true)
+                                ? (1 - $discounts[$p["product_family"]["source"]]["additional_services_discount"] / 100)
+                                : 1
+                            )
                             / (1 - $as["surcharge"] / 100)
                         , 2),
                     ])

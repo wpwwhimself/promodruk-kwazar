@@ -21,5 +21,6 @@ class Supplier extends Model
     public const ALLOWED_DISCOUNTS = [
         "Rabat na produkty" => "products_discount",
         "Rabat na znakowania" => "markings_discount",
+        "Rabat na usługi dodatkowe" => "additional_services_discount",
     ];
 }
