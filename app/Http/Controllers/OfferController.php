@@ -190,6 +190,8 @@ class OfferController extends Controller
                                 $additionals_price = 0;
 
                                 foreach ($calc["items"] as ["code" => $code, "marking" => $marking]) {
+                                    if (empty($marking)) continue;
+
                                     $price_data = $marking["quantity_prices"][$qty];
                                     $mod_data = $marking["main_price_modifiers"][Str::afterLast($code, "_")] ?? [];
 
