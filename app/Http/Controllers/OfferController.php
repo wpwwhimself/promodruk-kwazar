@@ -182,7 +182,7 @@ class OfferController extends Controller
                             ])
                             ->toArray(),
                         "additional_services" => collect($calc["additional_services"] ?? [])
-                            ->map(fn ($item) => $p["additional_services"][$item["code"]])
+                            ->map(fn ($item) => collect($p["additional_services"])->firstWhere("id", $item["code"]))
                             ->toArray(),
                         "pin_product" => $calc["pin_product"] ?? false,
                     ])
