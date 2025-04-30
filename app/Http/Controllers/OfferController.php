@@ -125,7 +125,7 @@ class OfferController extends Controller
                                         ? (1 - $discounts[$p["product_family"]["source"]]["markings_discount"] / 100)
                                         : 1
                                     )
-                                    / (1 - $m["surcharge"] / 100)
+                                    * (1 + $m["surcharge"] / 100)
                                 , 2),
                             ])
                             ->toArray(),
@@ -140,7 +140,7 @@ class OfferController extends Controller
                 "additional_services" => collect($p["additional_services"] ?? [])
                     ->map(fn ($as, $i) => [
                         ...$as,
-                        "surcharge" => $rq->global_surcharge ?? $rq->surcharge[$p["id"]]["additional_services"][$i] ?? $user->global_surcharge,
+                        "surcharge" => $rq->global_surcharge ?? $rq->surcharge[$p["id"]]["additional_services"][$as["id"]] ?? $user->global_surcharge,
                     ])
                     ->map(fn ($as) => [
                         ...$as,
@@ -151,7 +151,7 @@ class OfferController extends Controller
                                 ? (1 - $discounts[$p["product_family"]["source"]]["additional_services_discount"] / 100)
                                 : 1
                             )
-                            / (1 - $as["surcharge"] / 100)
+                            * (1 + $as["surcharge"] / 100)
                         , 2),
                     ])
                     ->toArray(),
@@ -165,7 +165,7 @@ class OfferController extends Controller
                         ? (1 - $discounts[$p["product_family"]["source"]]["products_discount"] / 100)
                         : 1
                     )
-                    / (1 - $p["surcharge"] / 100)
+                    * (1 + $p["surcharge"] / 100)
                 , 2),
 
             ])
