@@ -157,9 +157,14 @@ class DocumentOutputController extends Controller
 
             foreach ($position["calculations"] as $i => $calculation) {
                 $section->addText(
-                    count($position["calculations"]) > 1
+                    (count($position["calculations"]) > 1
                         ? "Kalkulacja ".($i + 1)
-                        : "Kalkulacja",
+                        : "Kalkulacja"
+                    )
+                    . (count($calculation["items"]) == 0
+                        ? " – ceny BEZ ZNAKOWANIA"
+                        : ""
+                    ),
                     $this->style(["h2"]),
                     $this->style(["h_separated"])
                 );
@@ -210,7 +215,7 @@ class DocumentOutputController extends Controller
                     $list = $section->addListItemRun(0, null, $this->style(["p_tight"]));
                     $list->addText("$qty szt.: " . as_pln($sum) . ($offer->gross_prices_visible ? " (" . as_pln($sum * self::VAT_COEF) . ")" : ""));
                     if ($offer->unit_cost_visible) {
-                        $list->addText(" (" . as_pln($sum / $qty) . ($offer->gross_prices_visible ? "/".as_pln($sum / $qty * self::VAT_COEF) : "") . "/szt.)", $this->style(["ghost", "small"]));
+                        $list->addText(" " . as_pln($sum / $qty) . "/szt." . ($offer->gross_prices_visible ? " (".as_pln($sum / $qty * self::VAT_COEF)."/szt.)" : ""), $this->style(["ghost", "small"]));
                     }
                 }
 
