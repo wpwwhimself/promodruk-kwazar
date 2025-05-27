@@ -12,7 +12,7 @@ $vat_coef = 1.23;
 
 @foreach ($products as $product)
 <x-app.section
-    title="{!! $product['name'] !!} ({{ $product['original_color_name'] }})"
+    title="{!! $product['name'] !!} ({{ $product['variant_name'] ?? $product['original_color_name'] }})"
     :subtitle="$product['id']"
     class="product flex-down"
 >
@@ -110,7 +110,7 @@ $vat_coef = 1.23;
                         @foreach ($product["quantities"] as $qty)
                         <li>
                             {{ $qty }} szt:
-                            @php $prc = $product["price"] + $product["manipulation_cost"] * $qty; @endphp
+                            @php $prc = ($product["price"] + $product["manipulation_cost"]) * $qty; @endphp
                             <strong>{{ as_pln($prc) }}</strong>
                             @if ($showGrossPrices)
                             <strong class="accent">({{ as_pln($prc * $vat_coef) }})</strong>
