@@ -107,7 +107,10 @@ class DocumentOutputController extends Controller
             ])
             ->collect("colors");
 
-        foreach ($offer->positions as $position) {
+        $positions = collect($offer->positions)
+            ->filter(fn ($pos) => !($pos["missing"] ?? false));
+
+        foreach ($positions as $position) {
             $line = $section->addTextRun($this->style(["h_separated"]));
             $line->addText(htmlspecialchars($position["name"])."  (".($position["variant_name"] ?? $position["original_color_name"]).") ", $this->style(["h2"]));
             $line->addText($position["id"], $this->style(["ghost", "bold"]));

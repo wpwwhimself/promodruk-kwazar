@@ -14,11 +14,11 @@ $vat_coef = 1.23;
 <x-app.section
     title="{!! $product['name'] !!} ({{ $product['variant_name'] ?? $product['original_color_name'] }})"
     :subtitle="$product['id']"
-    class="product flex-down"
+    class="product flex-down {{ $product['missing'] ?? false ? 'product-missing ghost' : '' }}"
 >
     <x-slot:buttons>
         <div class="flex-right middle barred-right">
-            @if ($product["quantities"])
+            @if ($product["quantities"] && !($product["missing"] ?? false))
 
             @if ($product["calculations"])
             <div>
@@ -44,17 +44,26 @@ $vat_coef = 1.23;
             @endif
 
             <div class="flex-right">
-                @if ($product["quantities"])
-                <input type="checkbox" name="edited[]" class="hidden" value="{{ $product['id'] }}" {{ in_array($product["id"], $edited) ? "checked" : "" }}>
-                <span class="button" role="edit-button" onclick="makeEditable(this.closest('section'))">{{ in_array($product["id"], $edited) ? "Zamknij": "Edytuj" }}</span>
-                @else
-                <span class="button hidden" role="add-button" onclick="submitWithLoader()">Dodaj</span>
-                @endif
+                @unless ($product["missing"] ?? false)
+                    @if ($product["quantities"])
+                    <input type="checkbox" name="edited[]" class="hidden" value="{{ $product['id'] }}" {{ in_array($product["id"], $edited) ? "checked" : "" }}>
+                    <span class="button" role="edit-button" onclick="makeEditable(this.closest('section'))">{{ in_array($product["id"], $edited) ? "Zamknij": "Edytuj" }}</span>
+                    @else
+                    <span class="button hidden" role="add-button" onclick="submitWithLoader()">Dodaj</span>
+                    @endif
+                @endunless
 
                 <span class="button danger" onclick="deleteProductFromOffer(this.closest('section'))">Usuń</span>
             </div>
         </div>
     </x-slot:buttons>
+
+    @if ($product["missing"] ?? false)
+    <x-slot:midsection>
+        <strong class="danger" style="font-size: 1.8em;">USUNIĘTY</strong>
+        <input type="hidden" name="missing_products[]" value="{{ $product['id'] }}">
+    </x-slot:midsection>
+    @endif
 
     <input type="hidden" name="product_ids[]" value="{{ $product['id'] }}">
 

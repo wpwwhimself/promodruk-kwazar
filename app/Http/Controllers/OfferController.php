@@ -37,6 +37,25 @@ class OfferController extends Controller
             ? Offer::find($id)
             : null;
 
+        if ($offer) {
+            // check for missing products
+            $magazyn_products = Http::post(env("MAGAZYN_API_URL") . "products/by/ids", [
+                "ids" => collect($offer?->positions)->pluck("id")->toArray(),
+            ])
+                ->collect()
+                ->pluck("id");
+            $missing_positions = collect($offer->positions)
+                ->filter(fn ($pos) => !$magazyn_products->contains($pos["id"]))
+                ->map(fn ($pos) => [ ...$pos, "missing" => true ])
+                ->keyBy("id");
+            $updated_positions = collect($offer->positions)
+                ->keyBy("id")
+                ->merge($missing_positions)
+                ->values()
+                ->toArray();
+            $offer->update(["positions" => $updated_positions]);
+        }
+
         return view("pages.offers.offer", compact(
             "offer",
             "suppliers",
@@ -225,6 +244,14 @@ class OfferController extends Controller
                     ])
                     ->toArray(),
             ]);
+
+        if ($rq->has("missing_products")) {
+            $offer = Offer::find($rq->offer_id);
+            $products = $products->merge(collect($offer->positions)
+                ->filter(fn ($p) => $p["missing"] ?? false)
+                ->toArray()
+            );
+        }
 
         return $products;
     }

@@ -33,4 +33,14 @@ class OfferTest extends DuskTestCase
             ;
         });
     }
+
+    public function test_should_see_missing_products_on_old_offer(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs(1)
+                ->visitRoute("offers.offer", ["id" => 47])
+                ->assertSee("USUNIĘTY")
+            ;
+        });
+    }
 }
