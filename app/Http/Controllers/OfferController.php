@@ -69,8 +69,9 @@ class OfferController extends Controller
         $edited = $rq->get("edited");
         $showPricesPerUnit = $rq->has("show_prices_per_unit");
         $showGrossPrices = $rq->has("show_gross_prices");
+        $showStocks = $rq->has("show_stocks");
 
-        return view("components.offer.position-list", compact("products", "user", "edited", "showPricesPerUnit", "showGrossPrices"));
+        return view("components.offer.position-list", compact("products", "user", "edited", "showPricesPerUnit", "showGrossPrices", "showStocks"));
     }
 
     public function save(Request $rq)
@@ -83,6 +84,7 @@ class OfferController extends Controller
                 "notes" => $rq->offer_notes,
                 "unit_cost_visible" => $rq->has("show_prices_per_unit"),
                 "gross_prices_visible" => $rq->has("show_gross_prices"),
+                "stocks_visible" => $rq->has("show_stocks"),
                 "positions" => $products,
             ]
         );
@@ -106,7 +108,7 @@ class OfferController extends Controller
 
         $products = Http::post(env("MAGAZYN_API_URL") . "products/by/ids", [
             "ids" => array_merge([$rq->product], $rq->product_ids ?? []),
-            "include" => ["markings"],
+            "include" => ["markings", "stock"],
         ])
             ->collect();
 

@@ -84,6 +84,11 @@ class DocumentOutputController extends Controller
     public function downloadOffer(string $format, int $offer_id, bool $save = false)
     {
         $offer = Offer::find($offer_id);
+        $magazyn_stocks = Http::post(env("MAGAZYN_API_URL") . "stock/by/id", [
+            "values" => collect($offer->positions)->pluck("id"),
+        ])
+            ->collect()
+            ->keyBy("id");
 
         $document = new PhpWord();
         $document->setDefaultFontName(self::FORMATS[$format]["font"]);
@@ -118,6 +123,22 @@ class DocumentOutputController extends Controller
             $line = $section->addTextRun();
             $line->addText("Opis: ", $this->style(["bold"]));
             $line->addText(Str::words(htmlspecialchars($position["description"]), 12 * 3, "..."));
+
+            if ($offer->stocks_visible) {
+                $stock_data = $magazyn_stocks[$position["id"]];
+                $line = $section->addTextRun($this->style(["p_tight"]));
+                $line->addText("Stan magazynowy*: ", $this->style(["bold"]));
+                $line->addText(($stock_data["current_stock"] ?? 0) . " szt.");
+
+                if ($stock_data["future_delivery_amount"] ?? false) {
+                    $line->addText(", ");
+                    $line->addText("przewidywana dostawa: ", $this->style(["bold"]));
+                    $line->addText($stock_data["future_delivery_date"] . ": " . $stock_data["future_delivery_amount"] . " szt.");
+                }
+
+                $line = $section->addTextRun();
+                $line->addText("*) w momencie generowania oferty, w każdej chwili może się zmienić", $this->style(["small", "italic"]));
+            }
 
             $section->addText("Dostępne kolory:", $this->style(["bold"]), $this->style(["p_tight"]));
             $line = $section->addTextRun();
@@ -314,6 +335,9 @@ class DocumentOutputController extends Controller
             ],
             "bold" => [
                 "bold" => true,
+            ],
+            "italic" => [
+                "italic" => true,
             ],
             "underline" => [
                 "underline" => "single",

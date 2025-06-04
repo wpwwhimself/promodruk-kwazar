@@ -43,4 +43,14 @@ class OfferTest extends DuskTestCase
             ;
         });
     }
+
+    public function test_should_see_stocks_on_offer(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs(1)
+                ->visitRoute("offers.offer", ["id" => 46])
+                ->assertSee("📦")
+            ;
+        });
+    }
 }

@@ -145,6 +145,12 @@ const prepareSaveOffer = () => {
                         :checked="$offer?->gross_prices_visible"
                         onchange="submitWithLoader()"
                     />
+                    <x-input-field type="checkbox"
+                        name="show_stocks" label="Stany magazynowe"
+                        value="1"
+                        :checked="$offer?->stocks_visible"
+                        onchange="submitWithLoader()"
+                    />
                 </div>
             </div>
         </div>
@@ -160,6 +166,8 @@ const prepareSaveOffer = () => {
             :products="collect($offer->positions)"
             :user="Auth::user() ?? User::find($rq->user_id)"
             :show-prices-per-unit="$offer?->unit_cost_visible"
+            :show-gross-prices="$offer?->gross_prices_visible"
+            :show-stocks="$offer?->stocks_visible"
         />
         @endif
     </div>
