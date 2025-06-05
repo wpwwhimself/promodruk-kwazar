@@ -63,7 +63,7 @@ $vat_coef = 1.23;
         <strong class="danger" style="font-size: 1.8em;">USUNIĘTY</strong>
         <input type="hidden" name="missing_products[]" value="{{ $product['id'] }}">
     </x-slot:midsection>
-    @elseif ($showStocks && $product["stock"] ?? false)
+    @elseif ($showStocks && ($product["stock"] ?? false))
     <x-slot:midsection>
         <div class="flex-down middle" style="gap: 0;">
             <span>
