@@ -322,7 +322,7 @@ class DocumentOutputController extends Controller
                 "bold" => true,
             ],
             "small" => [
-                "size" => 10,
+                "size" => 9,
             ],
             "h_separated" => [
                 "spaceBefore" => 3 * self::MM_TO_TWIP,

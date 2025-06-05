@@ -69,7 +69,7 @@ class OfferController extends Controller
         $edited = $rq->get("edited");
         $showPricesPerUnit = $rq->has("show_prices_per_unit");
         $showGrossPrices = $rq->has("show_gross_prices");
-        $showStocks = $rq->has("show_stocks");
+        $showStocks = true;
 
         return view("components.offer.position-list", compact("products", "user", "edited", "showPricesPerUnit", "showGrossPrices", "showStocks"));
     }
