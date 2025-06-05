@@ -18,6 +18,21 @@ $vat_coef = 1.23;
 >
     <x-slot:buttons>
         <div class="flex-right middle barred-right">
+            @if ($showStocks && ($product["stock"] ?? false))
+            <div class="flex-down center" style="gap: 0;">
+                <span>
+                    <span title="Stan magazynowy">📦</span>
+                    {{ $product["stock"]["current_stock"] ?? 0 }}
+                </span>
+                @if ($product["stock"]["future_delivery_amount"])
+                <span>
+                    <span title="Przewidywana dostawa">🚚</span>
+                    {{ $product["stock"]["future_delivery_date"] }}: {{ $product["stock"]["future_delivery_amount"] }}
+                </span>
+                @endif
+            </div>
+            @endif
+
             @if ($product["quantities"] && !($product["missing"] ?? false))
 
             @if ($product["calculations"])
@@ -62,21 +77,6 @@ $vat_coef = 1.23;
     <x-slot:midsection>
         <strong class="danger" style="font-size: 1.8em;">USUNIĘTY</strong>
         <input type="hidden" name="missing_products[]" value="{{ $product['id'] }}">
-    </x-slot:midsection>
-    @elseif ($showStocks && ($product["stock"] ?? false))
-    <x-slot:midsection>
-        <div class="flex-down middle" style="gap: 0;">
-            <span>
-                <span title="Stan magazynowy">📦</span>
-                {{ $product["stock"]["current_stock"] ?? 0 }}
-            </span>
-            @if ($product["stock"]["future_delivery_amount"])
-            <span>
-                <span title="Przewidywana dostawa">🚚</span>
-                {{ $product["stock"]["future_delivery_date"] }}: {{ $product["stock"]["future_delivery_amount"] }}
-            </span>
-            @endif
-        </div>
     </x-slot:midsection>
     @endif
 
