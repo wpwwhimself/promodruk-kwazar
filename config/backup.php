@@ -145,7 +145,7 @@ return [
             /*
              * The filename prefix used for the backup zip file.
              */
-            'filename_prefix' => '',
+            'filename_prefix' => 'backup',
 
             /*
              * The disk names on which the backups will be stored.
@@ -290,21 +290,21 @@ return [
             /*
              * The number of days for which backups must be kept.
              */
-            'keep_all_backups_for_days' => 5,
+            'keep_all_backups_for_days' => 7,
 
             /*
              * After the "keep_all_backups_for_days" period is over, the most recent backup
              * of that day will be kept. Older backups within the same day will be removed.
              * If you create backups only once a day, no backups will be removed yet.
              */
-            'keep_daily_backups_for_days' => 5,
+            'keep_daily_backups_for_days' => 7,
 
             /*
              * After the "keep_daily_backups_for_days" period is over, the most recent backup
              * of that week will be kept. Older backups within the same week will be removed.
              * If you create backups only once a week, no backups will be removed yet.
              */
-            'keep_weekly_backups_for_weeks' => 8,
+            'keep_weekly_backups_for_weeks' => 7,
 
             /*
              * After the "keep_weekly_backups_for_weeks" period is over, the most recent backup

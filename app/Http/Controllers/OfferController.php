@@ -150,6 +150,14 @@ class OfferController extends Controller
                                 , 2),
                             ])
                             ->toArray(),
+                        "setup_price" => round(
+                            $m["setup_price"]
+                            * (in_array("markings_discount", $suppliers->firstWhere("name", $p["product_family"]["source"])->allowed_discounts ?? [])
+                                && collect($m["quantity_prices"])->every("allow_discount_on_setup", true)
+                                ? (1 - $discounts[$p["product_family"]["source"]]["markings_discount"] / 100)
+                                : 1
+                            )
+                        , 2),
                     ])
                     ->groupBy("position"),
                 "quantities" => collect($rq->quantities[$p["id"]] ?? [])
